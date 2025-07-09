@@ -1,0 +1,6 @@
+@cs_apiEcommerce_HostAddress = http://localhost:5023
+
+GET {{cs_apiEcommerce_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
