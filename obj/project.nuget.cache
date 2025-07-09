@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "xkQPfvE+HSQ=",
+  "dgSpecHash": "8umtyLIsj8s=",
   "success": true,
   "projectFilePath": "/Users/gerry/Development/CSharp/cs-apiEcommerce/cs-apiEcommerce.csproj",
   "expectedPackageFiles": [
+    "/Users/gerry/.nuget/packages/automapper/14.0.0/automapper.14.0.0.nupkg.sha512",
     "/Users/gerry/.nuget/packages/azure.core/1.38.0/azure.core.1.38.0.nupkg.sha512",
     "/Users/gerry/.nuget/packages/azure.identity/1.11.4/azure.identity.1.11.4.nupkg.sha512",
     "/Users/gerry/.nuget/packages/humanizer.core/2.14.1/humanizer.core.2.14.1.nupkg.sha512",
