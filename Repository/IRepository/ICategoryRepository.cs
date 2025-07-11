@@ -1,5 +1,3 @@
-using System;
-
 namespace cs_apiEcommerce.Repository.IRepository;
 
 public interface ICategoryRepository

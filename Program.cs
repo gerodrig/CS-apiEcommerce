@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 string dbConnection = builder.Configuration.GetConnectionString("SqlConnection") ?? "";
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(dbConnection));
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
