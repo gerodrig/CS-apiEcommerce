@@ -169,3 +169,4 @@
 /Users/gerry/Development/CSharp/cs-apiEcommerce/obj/Debug/net8.0/ref/cs-apiEcommerce.dll
 /Users/gerry/Development/CSharp/cs-apiEcommerce/bin/Debug/net8.0/AutoMapper.dll
 /Users/gerry/Development/CSharp/cs-apiEcommerce/obj/Debug/net8.0/cs-apiEcommerce.sourcelink.json
+/Users/gerry/Development/CSharp/cs-apiEcommerce/bin/Debug/net8.0/BCrypt.Net-Next.dll
