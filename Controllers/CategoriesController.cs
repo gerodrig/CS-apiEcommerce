@@ -1,6 +1,8 @@
 using AutoMapper;
 using cs_apiEcommerce.Models.Dtos;
 using cs_apiEcommerce.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -9,15 +11,23 @@ namespace cs_apiEcommerce.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    //? Enable CORS at Controller level
+    // [EnableCors(PolicyNames.AllowSpecificOrigin)]
+    //* Authorization
+    [Authorize(Roles = "Admin")]
     public class CategoriesController(ICategoryRepository categoryRepository, IMapper mapper) : ControllerBase
     {
         private readonly ICategoryRepository _categoryRespository = categoryRepository;
 
         private readonly IMapper _mapper = mapper;
 
+        //? Directive to allow method without being authenticated
+        [AllowAnonymous]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        //? Enable CORS at method level
+        // [EnableCors(PolicyNames.AllowSpecificOrigin)]
         public IActionResult GetCategories()
         {
             ICollection<Category> categories = _categoryRespository.GetCategories();
@@ -28,6 +38,7 @@ namespace cs_apiEcommerce.Controllers
             return Ok(categoriesDto);
         }
 
+        [AllowAnonymous]
         [HttpGet("{id:int}", Name = "GetCategory")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

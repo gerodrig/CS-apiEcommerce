@@ -2,11 +2,13 @@ using AutoMapper;
 using cs_apiEcommerce.Models;
 using cs_apiEcommerce.Models.Dtos;
 using cs_apiEcommerce.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace cs_apiEcommerce.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController(
@@ -46,6 +48,7 @@ namespace cs_apiEcommerce.Controllers
             return Ok(userDto);
         }
 
+        [AllowAnonymous]
         [HttpPost(Name = "RegisterUser")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -77,6 +80,7 @@ namespace cs_apiEcommerce.Controllers
             return CreatedAtRoute("GetUser", new { id = result.Id }, result);
         }
 
+        [AllowAnonymous]
         [HttpPost("Login", Name = "LoginUser")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -97,7 +101,7 @@ namespace cs_apiEcommerce.Controllers
             }
 
             return Ok(user);
-         }
+        }
     }
 
 
