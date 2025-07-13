@@ -1,4 +1,5 @@
 using AutoMapper;
+using cs_apiEcommerce.Constants;
 using cs_apiEcommerce.Models.Dtos;
 using cs_apiEcommerce.Repository.IRepository;
 using Microsoft.AspNetCore.Authorization;
@@ -40,13 +41,19 @@ namespace cs_apiEcommerce.Controllers
 
         [AllowAnonymous]
         [HttpGet("{id:int}", Name = "GetCategory")]
+        //? Add cache response by Duration and by Profile name
+        // [ResponseCache(Duration = 10)]
+        [ResponseCache(CacheProfileName = CacheProfiles.Default10)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult GetCategory(int id)
         {
+            //* Verify Cache implementatoin
+            System.Console.WriteLine($"Category with the ID: {id} at {DateTime.Now}");
             Category? category = _categoryRespository.GetCategory(id);
+            System.Console.WriteLine($"Response with the ID: {id}");
 
             if (category == null) return NotFound($"The category with Id {id} doesn't exist.");
 

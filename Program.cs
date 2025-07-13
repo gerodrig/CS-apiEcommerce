@@ -3,6 +3,7 @@ using cs_apiEcommerce.Constants;
 using cs_apiEcommerce.Repository;
 using cs_apiEcommerce.Repository.IRepository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -12,6 +13,14 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 string dbConnection = builder.Configuration.GetConnectionString("SqlConnection") ?? "";
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(dbConnection));
+
+//?Implementing Cache
+builder.Services.AddResponseCaching(options =>
+{
+    options.MaximumBodySize = 1024 * 1024;
+    options.UseCaseSensitivePaths = true;
+});
+
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -41,7 +50,13 @@ builder.Services.AddAuthentication(options =>
 
     };
 });
-builder.Services.AddControllers();
+
+//? Add Cache profiles to Add controllers
+builder.Services.AddControllers(option =>
+{
+    option.CacheProfiles.Add(CacheProfiles.Default10, CacheProfiles.Profile10);
+    option.CacheProfiles.Add(CacheProfiles.Default20, CacheProfiles.Profile20);
+});
 builder.Services.AddEndpointsApiExplorer();
 
 //?The following swaggerGen was edited so it can be used with authentication
@@ -104,6 +119,10 @@ app.UseHttpsRedirection();
 
 //?Add Middleware for CORS  
 app.UseCors(PolicyNames.AllowSpecificOrigin);
+
+//? Add caching After CORS as per documentation
+//* https://learn.microsoft.com/en-us/aspnet/core/performance/caching/middleware?view=aspnetcore-9.0
+app.UseResponseCaching();
 
 //?Enable authorization middleware
 app.UseAuthentication();
