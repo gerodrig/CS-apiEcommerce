@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using AutoMapper;
 using cs_apiEcommerce.Constants;
 using cs_apiEcommerce.Models.Dtos;
@@ -8,9 +9,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
-namespace cs_apiEcommerce.Controllers
+namespace cs_apiEcommerce.Controllers.V1
 {
-    [Route("api/[controller]")]
+//* Add API versioning in route
+    //* Before [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
+    //* Add API versions
+    [ApiVersion("1.0")]
     [ApiController]
     //? Enable CORS at Controller level
     // [EnableCors(PolicyNames.AllowSpecificOrigin)]
@@ -29,6 +34,10 @@ namespace cs_apiEcommerce.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         //? Enable CORS at method level
         // [EnableCors(PolicyNames.AllowSpecificOrigin)]
+        //* We can indicate to which API version the method correspond
+        // [MapToApiVersion("1.0")]
+        //* Message to indicate that method is deprecated
+        [Obsolete("This method is deprecated. User getCategories V2 whihc orders by ID")]
         public IActionResult GetCategories()
         {
             ICollection<Category> categories = _categoryRespository.GetCategories();

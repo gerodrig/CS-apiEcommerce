@@ -1,4 +1,5 @@
 using System.Text;
+using Asp.Versioning;
 using cs_apiEcommerce.Constants;
 using cs_apiEcommerce.Repository;
 using cs_apiEcommerce.Repository.IRepository;
@@ -92,8 +93,63 @@ builder.Services.AddSwaggerGen(
             new List<string>()
             }
         });
+
+        //? Swagger Documentation for V1
+        options.SwaggerDoc("v1", new OpenApiInfo
+        {
+            Version = "v1",
+            Title = "API Ecommerce",
+            Description = "API to manage products, categories and users",
+            TermsOfService = new Uri("http://example.com/terms"),
+            Contact = new OpenApiContact
+            {
+            Name = "GerarICS",
+            Url = new Uri("https://gerar.ca")
+            },
+            License = new OpenApiLicense
+            {
+            Name = "Use License",
+            Url = new Uri("http://example.com/license")
+            }
+        });
+        //? Swagger Documentation for V2
+        options.SwaggerDoc("v2", new OpenApiInfo
+        {
+            Version = "v2",
+            Title = "API Ecommerce",
+            Description = "API to manage products, categories and users",
+            TermsOfService = new Uri("http://example.com/terms"),
+            Contact = new OpenApiContact
+            {
+            Name = "GerarICS",
+            Url = new Uri("https://gerar.ca")
+            },
+            License = new OpenApiLicense
+            {
+            Name = "Use License",
+            Url = new Uri("http://example.com/license")
+            }
+        });
     }
 );
+
+//? Add API versioning
+var apiVersionBuilder = builder.Services.AddApiVersioning(option =>
+{
+    //?Default version
+    option.AssumeDefaultVersionWhenUnspecified = true;
+    option.DefaultApiVersion = new ApiVersion(1, 0);
+    option.ReportApiVersions = true;
+    //* Following option is to combine versioning so it can be used via query, param and path
+    // option.ApiVersionReader = ApiVersionReader.Combine(new QueryStringApiVersionReader("api-version")); //? ?apiversion in queryparam
+});
+
+//? Add Api explorer so Swagger can show API version
+apiVersionBuilder.AddApiExplorer(option =>
+{
+    option.GroupNameFormat = "'v'VVV"; //* v1, v2, v3...
+    option.SubstituteApiVersionInUrl = true; //* api/v{version}/products
+});
 
 //? Add CORS
 builder.Services.AddCors(options =>
@@ -112,7 +168,12 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    //? ADD options to the swagger UI
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+        options.SwaggerEndpoint("/swagger/v2/swagger.json", "v2");
+    });
 }
 
 app.UseHttpsRedirection();

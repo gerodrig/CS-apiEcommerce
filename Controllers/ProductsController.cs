@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using AutoMapper;
 using cs_apiEcommerce.Models;
 using cs_apiEcommerce.Models.Dtos;
@@ -8,8 +9,14 @@ using Microsoft.AspNetCore.Mvc;
 namespace cs_apiEcommerce.Controllers
 {
     [Authorize(Roles = "Admin")]
-    [Route("api/[controller]")]
+    //* Add API versioning in route
+    //* Before [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
+    // [ApiVersion("1.0")]
+    // [ApiVersion("2.0")]
+    //* If controller will be neutral there's no need to show the version and can be specified as neutral
+    [ApiVersionNeutral]
     public class ProductsController(
         IProductRepository productRepository,
         ICategoryRepository categoryRepository,
