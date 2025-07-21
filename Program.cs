@@ -1,9 +1,11 @@
 using System.Text;
 using Asp.Versioning;
 using cs_apiEcommerce.Constants;
+using cs_apiEcommerce.Models;
 using cs_apiEcommerce.Repository;
 using cs_apiEcommerce.Repository.IRepository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -26,6 +28,11 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
+
+//* Add AspCoreNet Identity
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+.AddEntityFrameworkStores<ApplicationDbContext>()
+.AddDefaultTokenProviders();
 
 //* Add Authentication services
 string? secretKey = builder.Configuration.GetValue<string>("ApiSettings:SecretKey");
