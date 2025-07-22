@@ -183,6 +183,9 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+//? Enable static files in the server
+app.UseStaticFiles();
+
 app.UseHttpsRedirection();
 
 //?Add Middleware for CORS  

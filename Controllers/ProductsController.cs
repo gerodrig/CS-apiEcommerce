@@ -88,7 +88,7 @@ namespace cs_apiEcommerce.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult CreateProduct([FromBody] CreateProductDto createProductDto)
+        public IActionResult CreateProduct([FromForm] CreateProductDto createProductDto)
         {
             if (createProductDto == null)
                 return BadRequest(ModelState);
@@ -106,6 +106,45 @@ namespace cs_apiEcommerce.Controllers
             }
 
             Product product = _mapper.Map<Product>(createProductDto);
+
+            //* Steps to add image to the product
+            //Validate image
+            if (createProductDto.Image != null)
+            {
+                //build the image file name
+                // string fileName = product.ProductId + Guid.NewGuid().ToString() + Path.GetExtension(createProductDto.Image.FileName);
+                // string? imagesFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "ProductsImages");
+
+                // //? If directory doesn't exist create it
+                // if (!Directory.Exists(imagesFolder))
+                // {
+                //     Directory.CreateDirectory(imagesFolder);
+                // }
+
+                // //Save image in the directory
+                // string? filePath = Path.Combine(imagesFolder, fileName);
+                // FileInfo file = new(filePath);
+
+                // if (file.Exists)
+                // {
+                //     file.Delete();
+                // }
+
+                // using FileStream fileStream = new(filePath, FileMode.Create);
+                // createProductDto.Image.CopyTo(fileStream);
+
+                // //create baseurl
+                // string baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.Value}{HttpContext.Request.PathBase.Value}";
+
+                // product.ImgUrl = $"{baseUrl}/ProductsImages/{fileName}";
+                // product.ImgUrlLocal = filePath; 
+                   UploadProductImage(createProductDto, product);
+
+            }
+            else
+            {
+                product.ImgUrl = "https://placehold.co/300x300";
+            }
 
             if (!_productRepository.CreateProduct(product))
             {
@@ -152,7 +191,7 @@ namespace cs_apiEcommerce.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult UpdateProduct(int productId, [FromBody] UpdateProductDto updateProductDto)
+        public IActionResult UpdateProduct(int productId, [FromForm] UpdateProductDto updateProductDto)
         {
             if (updateProductDto == null) return BadRequest(ModelState);
 
@@ -171,6 +210,18 @@ namespace cs_apiEcommerce.Controllers
             Product product = _mapper.Map<Product>(updateProductDto);
             product.ProductId = productId;
 
+             //* Steps to add image to the product
+            //Validate image
+            if (updateProductDto.Image != null)
+            {
+                UploadProductImage(updateProductDto, product);
+
+            }
+            else
+            {
+                product.ImgUrl = "https://placehold.co/300x300";
+            }
+
             if (!_productRepository.UpdateProduct(product))
             {
                 ModelState.AddModelError("CustomError", $"Something went wrong whne trying to update registry {product.Name}");
@@ -178,6 +229,37 @@ namespace cs_apiEcommerce.Controllers
             }
 
             return NoContent();
+        }
+
+        private void UploadProductImage(dynamic productDto, Product product)
+        {
+            //build the image file name
+            string fileName = product.ProductId + Guid.NewGuid().ToString() + Path.GetExtension(productDto.Image.FileName);
+            string? imagesFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "ProductsImages");
+
+            //? If directory doesn't exist create it
+            if (!Directory.Exists(imagesFolder))
+            {
+                Directory.CreateDirectory(imagesFolder);
+            }
+
+            //Save image in the directory
+            string? filePath = Path.Combine(imagesFolder, fileName);
+            FileInfo file = new(filePath);
+
+            if (file.Exists)
+            {
+                file.Delete();
+            }
+
+            using FileStream fileStream = new(filePath, FileMode.Create);
+            productDto.Image.CopyTo(fileStream);
+
+            //create baseurl
+            string baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.Value}{HttpContext.Request.PathBase.Value}";
+
+            product.ImgUrl = $"{baseUrl}/ProductsImages/{fileName}";
+            product.ImgUrlLocal = filePath;
         }
 
         [HttpDelete("{productId:int}", Name = "DeleteProduct")]
