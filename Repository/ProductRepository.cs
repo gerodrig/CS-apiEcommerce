@@ -57,6 +57,16 @@ public class ProductRepository(ApplicationDbContext db) : IProductRepository
         return [.. _db.Products.Include(p => p.Category).Where(p => p.CategoryId == categoryId).OrderBy(p => p.Name)];
     }
 
+    public ICollection<Product> GetProductsPaginated(int pageNumber, int pageSize)
+    {
+        return [.. _db.Products.OrderBy(p => p.ProductId).Skip((pageNumber = 1) * pageSize).Take(pageSize)];
+    }
+
+    public int GetTotalProducts()
+    {
+        return _db.Products.Count();
+    }
+
     public bool ProductExists(int id)
     {
         return id > 0 && _db.Products.Any(p => p.ProductId == id);

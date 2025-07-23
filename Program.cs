@@ -1,6 +1,7 @@
 using System.Text;
 using Asp.Versioning;
 using cs_apiEcommerce.Constants;
+using cs_apiEcommerce.Data;
 using cs_apiEcommerce.Models;
 using cs_apiEcommerce.Repository;
 using cs_apiEcommerce.Repository.IRepository;
@@ -15,7 +16,17 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 string dbConnection = builder.Configuration.GetConnectionString("SqlConnection") ?? "";
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(dbConnection));
+// builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(dbConnection));
+
+//* SEED the data
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+  options.UseSqlServer(dbConnection)
+  .UseSeeding((context, _) =>
+  {
+      var appContext = (ApplicationDbContext)context;
+      DataSeeder.SeedData(appContext);
+  })
+);
 
 //?Implementing Cache
 builder.Services.AddResponseCaching(options =>
@@ -110,13 +121,13 @@ builder.Services.AddSwaggerGen(
             TermsOfService = new Uri("http://example.com/terms"),
             Contact = new OpenApiContact
             {
-            Name = "GerarICS",
-            Url = new Uri("https://gerar.ca")
+                Name = "GerarICS",
+                Url = new Uri("https://gerar.ca")
             },
             License = new OpenApiLicense
             {
-            Name = "Use License",
-            Url = new Uri("http://example.com/license")
+                Name = "Use License",
+                Url = new Uri("http://example.com/license")
             }
         });
         //? Swagger Documentation for V2
@@ -128,13 +139,13 @@ builder.Services.AddSwaggerGen(
             TermsOfService = new Uri("http://example.com/terms"),
             Contact = new OpenApiContact
             {
-            Name = "GerarICS",
-            Url = new Uri("https://gerar.ca")
+                Name = "GerarICS",
+                Url = new Uri("https://gerar.ca")
             },
             License = new OpenApiLicense
             {
-            Name = "Use License",
-            Url = new Uri("http://example.com/license")
+                Name = "Use License",
+                Url = new Uri("http://example.com/license")
             }
         });
     }

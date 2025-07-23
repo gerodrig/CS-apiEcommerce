@@ -2,6 +2,7 @@ using Asp.Versioning;
 using AutoMapper;
 using cs_apiEcommerce.Models;
 using cs_apiEcommerce.Models.Dtos;
+using cs_apiEcommerce.Models.Dtos.Responses;
 using cs_apiEcommerce.Repository.IRepository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -53,6 +54,45 @@ namespace cs_apiEcommerce.Controllers
             return Ok(productDto);
 
         }
+
+        [AllowAnonymous]
+        [HttpGet("Paginated", Name = "GetProductsPaginated")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public IActionResult GetProductsPaginated([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 5)
+        {
+            if (pageNumber < 1 || pageSize < 1)
+            {
+                return BadRequest("Pagination parameters are not valid.");
+            }
+
+            int totalProducts = _productRepository.GetTotalProducts();
+            int totalPages = (int)Math.Ceiling((double)totalProducts / pageSize);
+
+            //? Validate page number in case there are no more pages available
+            if (pageNumber > totalPages)
+            {
+                return NotFound("No more pages available.");
+            }
+
+            ICollection<Product>? products = _productRepository.GetProductsPaginated(pageNumber, pageSize);
+            List<ProductDto>? productDto = _mapper.Map<List<ProductDto>>(products);
+            PaginationResponse<ProductDto> paginationResponse = new()
+            {
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalPages = totalPages,
+                Items = productDto
+            };
+
+            return Ok(paginationResponse);
+
+
+        }
+
         [HttpGet("searchProductByCategory/{categoryId:int}", Name = "GetProductsByCategory")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -138,7 +178,7 @@ namespace cs_apiEcommerce.Controllers
 
                 // product.ImgUrl = $"{baseUrl}/ProductsImages/{fileName}";
                 // product.ImgUrlLocal = filePath; 
-                   UploadProductImage(createProductDto, product);
+                UploadProductImage(createProductDto, product);
 
             }
             else
@@ -210,7 +250,7 @@ namespace cs_apiEcommerce.Controllers
             Product product = _mapper.Map<Product>(updateProductDto);
             product.ProductId = productId;
 
-             //* Steps to add image to the product
+            //* Steps to add image to the product
             //Validate image
             if (updateProductDto.Image != null)
             {

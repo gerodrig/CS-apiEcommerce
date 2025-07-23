@@ -1,11 +1,19 @@
 {
   "Version": 1,
-  "Hash": "/xkML+EXj328u1mROCRMu5sWfVNguljSG6WOprtluvQ=",
+  "Hash": "MeVqUJcj7f+Rulf1Ve0YttVNu5sNJRmmO4/fTdziy7E=",
   "Source": "cs-apiEcommerce",
   "BasePath": "_content/cs-apiEcommerce",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
-  "DiscoveryPatterns": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "cs-apiEcommerce/wwwroot",
+      "Source": "cs-apiEcommerce",
+      "ContentRoot": "/Users/gerry/Development/CSharp/cs-apiEcommerce/wwwroot/",
+      "BasePath": "_content/cs-apiEcommerce",
+      "Pattern": "**"
+    }
+  ],
   "Assets": []
 }

@@ -180,3 +180,4 @@
 /Users/gerry/Development/CSharp/cs-apiEcommerce/bin/Debug/net8.0/Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
 /Users/gerry/Development/CSharp/cs-apiEcommerce/bin/Debug/net8.0/Microsoft.Extensions.Identity.Core.dll
 /Users/gerry/Development/CSharp/cs-apiEcommerce/bin/Debug/net8.0/Microsoft.Extensions.Identity.Stores.dll
+/Users/gerry/Development/CSharp/cs-apiEcommerce/bin/Debug/net8.0/cs-apiEcommerce.staticwebassets.runtime.json
